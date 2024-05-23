@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Game } from "./Game";
 
-export function useUpdateGame(game: Game | null) {
+export function useGame(game: Game | null) {
   console.log("useUpdateGame");
 
   useEffect(() => {

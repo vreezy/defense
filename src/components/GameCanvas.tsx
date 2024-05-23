@@ -1,6 +1,6 @@
 "use client";
 import { Game } from "@/game/Game";
-import { useUpdateGame } from "@/game/useGame";
+import { useGame } from "@/game/useGame";
 import { useEffect, useRef, useState } from "react";
 
 export default function GameCanvas() {
@@ -14,7 +14,7 @@ export default function GameCanvas() {
     }
   }, []);
 
-  useUpdateGame(gameInstance);
+  useGame(gameInstance);
 
   return (
     <div>

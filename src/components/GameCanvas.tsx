@@ -2,23 +2,36 @@
 
 import { useGameStore } from "@/game/store";
 import { Canvas } from "@react-three/fiber";
+import { OrbitControls } from "@react-three/drei";
+import { Grid } from "@/game/types";
+import { Tile } from "./Tile";
+
+function iterateGrid(
+  grid: Grid,
+  callback: (rowIndex: number, colIndex: number) => any
+) {
+  return Array.from({ length: grid.rows }, (_, rowIndex) =>
+    Array.from({ length: grid.columns }, (_, colIndex) =>
+      callback(rowIndex, colIndex)
+    )
+  );
+}
 
 export default function GameCanvas() {
-  const { count, increase } = useGameStore((state) => state);
+  const { grid } = useGameStore((state) => state);
 
   return (
-    <Canvas
-      onMouseDown={() => {
-        increase(1);
-      }}
-    >
+    <Canvas camera={{ position: [5, 10, 5], fov: 50 }}>
       <ambientLight intensity={2} />
-
-      {Array.from({ length: count }).map((_, index) => (
-        <mesh key={index} position={[index * 2, 0, 0]}>
-          <boxGeometry args={[1, 1, 1]} />
-          <meshStandardMaterial color="hotpink" />
-        </mesh>
+      <ambientLight />
+      <pointLight position={[10, 10, 10]} />
+      <OrbitControls />
+      {iterateGrid(grid, (rowIndex, colIndex) => (
+        <Tile
+          key={`${rowIndex}-${colIndex}`}
+          position={[colIndex, 0, rowIndex]}
+          color={rowIndex % 2 === colIndex % 2 ? "gray" : "white"}
+        />
       ))}
     </Canvas>
   );

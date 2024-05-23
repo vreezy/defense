@@ -6,6 +6,7 @@ import { OrbitControls } from "@react-three/drei";
 import { Grid } from "@/game/types";
 import { Tile } from "./Tile";
 import EnemyHandler from "./EnemyHandler";
+import WeaponHandler from "./WeaponHandler";
 
 function iterateGrid(
   grid: Grid,
@@ -59,6 +60,7 @@ export default function GameCanvas() {
         />
       ))}
       <EnemyHandler />
+      <WeaponHandler />
     </Canvas>
   );
 }

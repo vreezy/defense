@@ -5,6 +5,11 @@ export interface Enemy {
   speed: number;
 }
 
+export interface Weapon {
+  id: string;
+  position: [number, number];
+}
+
 export interface Grid {
   rows: number;
   columns: number;

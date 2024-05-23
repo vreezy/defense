@@ -1,14 +1,18 @@
 import { create } from "zustand";
-import { Enemy, Grid } from "./types";
+import { Enemy, Grid, Weapon } from "./types";
 
 export interface GameState {
   grid: Grid;
   enemies: Enemy[];
+  weapons: Weapon[];
 }
 export interface GameActions {
   spawnEnemy: (position: [number, number]) => void;
   removeEnemy: (id: string) => void;
   updateEnemy: (enemy: Enemy) => void;
+
+  spawnWeapon: (position: [number, number]) => void;
+  removeWeapon: (id: string) => void;
 }
 export type GameStore = GameState & GameActions;
 
@@ -20,6 +24,8 @@ export const useGameStore = create<GameStore>()((set) => ({
     end: [9, 9],
   },
   enemies: [],
+  weapons: [],
+
   spawnEnemy: (position: [number, number]) =>
     set((state) => ({
       enemies: [
@@ -41,5 +47,20 @@ export const useGameStore = create<GameStore>()((set) => ({
       enemies: state.enemies.map((enemy) =>
         enemy.id === update.id ? { ...enemy, ...update } : enemy
       ),
+    })),
+
+  spawnWeapon: (position: [number, number]) =>
+    set((state) => ({
+      weapons: [
+        ...state.weapons,
+        {
+          id: `${Date.now()}`,
+          position,
+        },
+      ],
+    })),
+  removeWeapon: (id) =>
+    set((state) => ({
+      weapons: state.weapons.filter((weapon) => weapon.id !== id),
     })),
 }));

@@ -1,6 +1,6 @@
 export interface Enemy {
   id: string;
-  position: [number, number, number];
+  position: [number, number];
   health: number;
   speed: number;
 }
@@ -8,4 +8,6 @@ export interface Enemy {
 export interface Grid {
   rows: number;
   columns: number;
+  start: [number, number];
+  end: [number, number];
 }

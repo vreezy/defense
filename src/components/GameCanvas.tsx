@@ -16,21 +16,44 @@ function iterateGrid(
     )
   );
 }
+function getTileColor(grid: Grid, rowIndex: number, colIndex: number) {
+  if (grid.start[0] === rowIndex && grid.start[1] === colIndex) {
+    return "green";
+  }
+  if (grid.end[0] === rowIndex && grid.end[1] === colIndex) {
+    return "red";
+  }
+  return rowIndex % 2 === colIndex % 2 ? "gray" : "white";
+}
 
 export default function GameCanvas() {
   const { grid } = useGameStore((state) => state);
 
+  const centerX = (grid.columns - 1) / 2;
+  const centerZ = (grid.rows - 1) / 2;
+
   return (
-    <Canvas camera={{ position: [5, 10, 5], fov: 50 }}>
+    <Canvas
+      camera={{
+        position: [centerX, 10, centerZ + 10],
+        fov: 50,
+      }}
+    >
       <ambientLight intensity={2} />
       <ambientLight />
       <pointLight position={[10, 10, 10]} />
-      <OrbitControls />
+      <OrbitControls
+        enablePan={false}
+        target={[centerX, 0, centerZ]}
+        maxPolarAngle={Math.PI / 2 - Math.PI / 20} // Prevent the camera from going below the ground
+        minDistance={5} // Minimum zoom distance
+        maxDistance={20} // Maximum zoom distance
+      />
       {iterateGrid(grid, (rowIndex, colIndex) => (
         <Tile
           key={`${rowIndex}-${colIndex}`}
-          position={[colIndex, 0, rowIndex]}
-          color={rowIndex % 2 === colIndex % 2 ? "gray" : "white"}
+          position={[colIndex, rowIndex]}
+          color={getTileColor(grid, rowIndex, colIndex)}
         />
       ))}
     </Canvas>

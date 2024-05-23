@@ -15,8 +15,17 @@ export const useGameStore = create<GameStore>()((set) => ({
   grid: {
     rows: 10,
     columns: 10,
+    start: [0, 0],
+    end: [9, 9],
   },
-  enemies: [],
+  enemies: [
+    {
+      id: "1",
+      position: [5, 3],
+      health: 100,
+      speed: 1,
+    },
+  ],
   spawnEnemy: (enemy) =>
     set((state) => ({
       enemies: [...state.enemies, enemy],

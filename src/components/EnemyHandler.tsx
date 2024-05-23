@@ -5,17 +5,7 @@ import { Enemy } from "./Enemy";
 import useIntervalFrame from "@/game/utils/useIntervalFrame";
 import { useFrame } from "@react-three/fiber";
 import { getNextDirection } from "@/game/utils/getNextDirection";
-
-function positionEauals(
-  position1: [number, number],
-  position2: [number, number],
-  tolerance: number = 0.1
-) {
-  return (
-    Math.abs(position1[0] - position2[0]) < tolerance &&
-    Math.abs(position1[1] - position2[1]) < tolerance
-  );
-}
+import { positionEquals } from "@/game/utils/positionEquals";
 
 export default function EnemyHandler() {
   const { grid, enemies, spawnEnemy, updateEnemy, removeEnemy } = useGameStore(
@@ -34,7 +24,7 @@ export default function EnemyHandler() {
         enemy.position[1] + Math.sin(nextDirection) * enemy.speed,
       ];
 
-      if (positionEauals(position, grid.end)) {
+      if (positionEquals(position, grid.end)) {
         removeEnemy(enemy.id);
       } else {
         updateEnemy({

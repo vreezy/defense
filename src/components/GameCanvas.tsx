@@ -5,7 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Grid } from "@/game/types";
 import { Tile } from "./Tile";
-import { Enemy } from "./Enemy";
+import EnemyHandler from "./EnemyHandler";
 
 function iterateGrid(
   grid: Grid,
@@ -58,9 +58,7 @@ export default function GameCanvas() {
           color={getTileColor(grid, rowIndex, colIndex)}
         />
       ))}
-      {enemies.map((enemy) => (
-        <Enemy key={enemy.id} position={enemy.position} color="red" />
-      ))}
+      <EnemyHandler />
     </Canvas>
   );
 }

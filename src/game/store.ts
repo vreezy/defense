@@ -6,8 +6,9 @@ export interface GameState {
   enemies: Enemy[];
 }
 export interface GameActions {
-  spawnEnemy: (enemy: Enemy) => void;
+  spawnEnemy: (position: [number, number]) => void;
   removeEnemy: (id: string) => void;
+  updateEnemy: (enemy: Enemy) => void;
 }
 export type GameStore = GameState & GameActions;
 
@@ -18,20 +19,27 @@ export const useGameStore = create<GameStore>()((set) => ({
     start: [0, 0],
     end: [9, 9],
   },
-  enemies: [
-    {
-      id: "1",
-      position: [5, 3],
-      health: 100,
-      speed: 1,
-    },
-  ],
-  spawnEnemy: (enemy) =>
+  enemies: [],
+  spawnEnemy: (position: [number, number]) =>
     set((state) => ({
-      enemies: [...state.enemies, enemy],
+      enemies: [
+        ...state.enemies,
+        {
+          id: `${Date.now()}`,
+          position,
+          health: 100,
+          speed: 0.01,
+        },
+      ],
     })),
   removeEnemy: (id) =>
     set((state) => ({
       enemies: state.enemies.filter((enemy) => enemy.id !== id),
+    })),
+  updateEnemy: (update: Enemy) =>
+    set((state) => ({
+      enemies: state.enemies.map((enemy) =>
+        enemy.id === update.id ? { ...enemy, ...update } : enemy
+      ),
     })),
 }));

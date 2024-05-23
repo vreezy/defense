@@ -5,6 +5,7 @@ import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { Grid } from "@/game/types";
 import { Tile } from "./Tile";
+import { Enemy } from "./Enemy";
 
 function iterateGrid(
   grid: Grid,
@@ -27,7 +28,7 @@ function getTileColor(grid: Grid, rowIndex: number, colIndex: number) {
 }
 
 export default function GameCanvas() {
-  const { grid } = useGameStore((state) => state);
+  const { grid, enemies } = useGameStore((state) => state);
 
   const centerX = (grid.columns - 1) / 2;
   const centerZ = (grid.rows - 1) / 2;
@@ -45,7 +46,8 @@ export default function GameCanvas() {
       <OrbitControls
         enablePan={false}
         target={[centerX, 0, centerZ]}
-        maxPolarAngle={Math.PI / 2 - Math.PI / 20} // Prevent the camera from going below the ground
+        // maxPolarAngle={Math.PI / 2 - Math.PI / 20} // Prevent the camera from going below the ground
+        maxPolarAngle={Math.PI / 2} // Prevent the camera from going below the ground
         minDistance={5} // Minimum zoom distance
         maxDistance={20} // Maximum zoom distance
       />
@@ -55,6 +57,9 @@ export default function GameCanvas() {
           position={[colIndex, rowIndex]}
           color={getTileColor(grid, rowIndex, colIndex)}
         />
+      ))}
+      {enemies.map((enemy) => (
+        <Enemy key={enemy.id} position={enemy.position} color="red" />
       ))}
     </Canvas>
   );

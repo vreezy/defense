@@ -1,24 +1,25 @@
 "use client";
-import { Game } from "@/game/Game";
-import { useGame } from "@/game/useGame";
-import { useEffect, useRef, useState } from "react";
+
+import { useGameStore } from "@/game/store";
+import { Canvas } from "@react-three/fiber";
 
 export default function GameCanvas() {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [gameInstance, setGameInstance] = useState<Game | null>(null);
-
-  useEffect(() => {
-    if (canvasRef.current) {
-      const game = new Game(canvasRef.current);
-      setGameInstance(game);
-    }
-  }, []);
-
-  useGame(gameInstance);
+  const { count, increase } = useGameStore((state) => state);
 
   return (
-    <div>
-      <canvas ref={canvasRef} id="game" width="800" height="600"></canvas>
-    </div>
+    <Canvas
+      onMouseDown={() => {
+        increase(1);
+      }}
+    >
+      <ambientLight intensity={2} />
+
+      {Array.from({ length: count }).map((_, index) => (
+        <mesh key={index} position={[index * 2, 0, 0]}>
+          <boxGeometry args={[1, 1, 1]} />
+          <meshStandardMaterial color="hotpink" />
+        </mesh>
+      ))}
+    </Canvas>
   );
 }

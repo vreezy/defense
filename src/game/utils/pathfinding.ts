@@ -64,6 +64,19 @@ export function getNextDirection(
   return currentAngle;
 }
 
+export function checkPaths(
+  froms: {
+    position: [number, number];
+  }[],
+  grid: Grid,
+  obstacles: Obstacle[]
+) {
+  return !froms.some(({ position }) => {
+    const path = findPath(position, grid, obstacles);
+    return !(path && path.length > 0);
+  });
+}
+
 export function checkPath(
   grid: Grid,
   obstacles: Obstacle[],

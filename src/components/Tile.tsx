@@ -1,18 +1,20 @@
-import React, { useCallback, useRef } from "react";
-import { MeshProps, useFrame, useThree } from "@react-three/fiber";
+import React, { useCallback, useRef, useState } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import { Mesh } from "three";
 import { useGameStore } from "@/game/store";
 import { positionEquals } from "@/game/utils/positionEquals";
-import { checkPath, checkPaths } from "@/game/utils/pathfinding";
+import { checkPaths } from "@/game/utils/pathfinding";
 
-interface TileProps extends Omit<MeshProps, "position"> {
+export function Tile({
+  position,
+  color,
+}: {
   position: [number, number];
   color?: string;
-}
-
-export const Tile: React.FC<TileProps> = ({ position, color }) => {
+}) {
   const meshRef = useRef<Mesh>(null);
-  const [hovering, setHovering] = React.useState(false);
+  const [hovering, setHovering] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const { raycaster, mouse, camera, scene } = useThree();
   const { enemies, weapons, spawnWeapon, removeWeapon, grid } = useGameStore(
     (state) => state
@@ -49,18 +51,30 @@ export const Tile: React.FC<TileProps> = ({ position, color }) => {
     spawnWeapon(position);
   }, [position, weapons, spawnWeapon]);
 
+  const handlePointerDown = () => {
+    setIsDragging(false);
+  };
+
+  const handlePointerUp = () => {
+    if (!isDragging && hovering) {
+      trySpawnWeapon();
+    }
+  };
+
+  const handlePointerMove = () => {
+    setIsDragging(true);
+  };
+
   return (
     <mesh
       ref={meshRef}
       position={[position[0], hovering ? 0.05 : 0, position[1]]}
-      onPointerDown={() => {
-        if (hovering) {
-          trySpawnWeapon();
-        }
-      }}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerMove={handlePointerMove}
     >
       <boxGeometry args={[1, hovering ? 0.2 : 0.1, 1]} />
       <meshStandardMaterial color={color} />
     </mesh>
   );
-};
+}

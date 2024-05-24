@@ -6,16 +6,7 @@ import { useGameStore } from "@/game/store";
 import { type Weapon } from "@/game/types";
 import BlasterModel from "./models/BlasterModel";
 import { useSpring, a } from "@react-spring/three";
-
-function usePulse(from: number, to: number, speed: number) {
-  const [scale, setScale] = React.useState(from);
-  useFrame(({ clock }) => {
-    const scale =
-      from + (to - from) * (Math.sin(clock.getElapsedTime() * speed) / 2 + 0.5);
-    setScale(scale);
-  });
-  return scale;
-}
+import usePulse from "@/game/utils/usePulse";
 
 export function Weapon({
   weapon,

@@ -1,16 +1,16 @@
 import { ThreeEvent, useFrame, useThree } from "@react-three/fiber";
-import { register } from "module";
 import { useRef, useState } from "react";
-import { Mesh } from "three";
+import { Mesh, Group, Object3D } from "three";
 
-export default function useClickOrDrag(handlers?: {
+export default function useClickOrDrag<T extends Object3D>(handlers?: {
   onClick?: () => void;
   onDrag?: () => void;
 }) {
-  const meshRef = useRef<Mesh>(null);
+  const ref = useRef<T>(null);
   const [hovering, setHovering] = useState(false);
   const { raycaster, mouse, camera, scene } = useThree();
   const [dragDistance, setDragDistance] = useState(0);
+
   const handlePointerDown = () => {
     setDragDistance(0);
   };
@@ -21,7 +21,6 @@ export default function useClickOrDrag(handlers?: {
     } else {
       handlers && handlers.onDrag && handlers.onDrag();
     }
-
     setDragDistance(0);
   };
 
@@ -33,20 +32,21 @@ export default function useClickOrDrag(handlers?: {
   };
 
   useFrame(() => {
-    if (!meshRef.current) return;
+    if (!ref.current) return;
 
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObjects(scene.children);
 
-    if (intersects.length > 0 && intersects[0].object === meshRef.current) {
+    if (intersects.length > 0 && intersects[0].object === ref.current) {
       setHovering(true);
     } else {
       setHovering(false);
     }
   });
+
   return {
     props: {
-      ref: meshRef,
+      ref,
       onPointerDown: handlePointerDown,
       onPointerUp: handlePointerUp,
       onPointerMove: handlePointerMove,

@@ -5,6 +5,7 @@ import { MeshProps } from "@react-three/fiber";
 import { useGameStore } from "@/game/store";
 import { type Weapon } from "@/game/types";
 import useClickOrDrag from "@/game/utils/useClickOrDrag";
+import { Mesh } from "three";
 
 export function Weapon({
   weapon,
@@ -21,7 +22,7 @@ export function Weapon({
     console.log("Weapon selected", weaponSelected?.id === weapon.id);
   }, [weaponSelected, weapon.id]);
 
-  const { props } = useClickOrDrag({
+  const { props } = useClickOrDrag<Mesh>({
     onClick: () => setWeaponSelected(weapon),
   });
 

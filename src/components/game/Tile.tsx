@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { useGameStore } from "@/game/store";
 import { positionEquals } from "@/game/utils/positionEquals";
 import { checkPaths } from "@/game/utils/pathfinding";
 import useClickOrDrag from "@/game/utils/useClickOrDrag";
+import TileModel from "./models/TileModel";
+import { Group } from "three";
 
 export function Tile({
   position,
@@ -39,14 +41,15 @@ export function Tile({
     spawnWeapon(position);
   }, [position, weapons, spawnWeapon]);
 
-  const { props, hovering } = useClickOrDrag({
+  const { props, hovering } = useClickOrDrag<Group>({
     onClick,
   });
 
   return (
-    <mesh position={[position[0], hovering ? 0.05 : 0, position[1]]} {...props}>
-      <boxGeometry args={[1, hovering ? 0.2 : 0.1, 1]} />
-      <meshStandardMaterial color={color} />
-    </mesh>
+    <TileModel
+      position={[position[0], 0, position[1]]}
+      {...props}
+      tint={color}
+    />
   );
 }

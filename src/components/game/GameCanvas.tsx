@@ -2,7 +2,7 @@
 
 import { useGameStore } from "@/game/store";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls } from "@react-three/drei";
+import { Environment, OrbitControls } from "@react-three/drei";
 import { Grid } from "@/game/types";
 import { Tile } from "./Tile";
 import EnemyHandler from "./EnemyHandler";
@@ -20,12 +20,12 @@ function iterateGrid(
 }
 function getTileColor(grid: Grid, rowIndex: number, colIndex: number) {
   if (grid.start[0] === rowIndex && grid.start[1] === colIndex) {
-    return "green";
+    return "#00ff00";
   }
   if (grid.end[0] === rowIndex && grid.end[1] === colIndex) {
-    return "red";
+    return "#ff0000";
   }
-  return rowIndex % 2 === colIndex % 2 ? "gray" : "white";
+  return undefined;
 }
 
 export default function GameCanvas() {
@@ -45,9 +45,7 @@ export default function GameCanvas() {
         fov: 50,
       }}
     >
-      <ambientLight intensity={2} />
-      <ambientLight />
-      <pointLight position={[10, 10, 10]} />
+      <Environment preset="apartment" />
       <OrbitControls
         enablePan={false}
         target={[centerX, 0, centerZ]}

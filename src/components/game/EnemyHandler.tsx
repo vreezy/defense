@@ -43,7 +43,5 @@ export default function EnemyHandler() {
     });
   });
 
-  return enemies.map((enemy) => (
-    <Enemy key={enemy.id} position={enemy.position} color="red" />
-  ));
+  return enemies.map((enemy) => <Enemy key={enemy.id} enemy={enemy} />);
 }

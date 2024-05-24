@@ -29,13 +29,17 @@ function getTileColor(grid: Grid, rowIndex: number, colIndex: number) {
 }
 
 export default function GameCanvas() {
-  const { grid, enemies } = useGameStore((state) => state);
+  const { grid, setWeaponSelected } = useGameStore((state) => state);
 
   const centerX = (grid.columns - 1) / 2;
   const centerZ = (grid.rows - 1) / 2;
 
   return (
     <Canvas
+      onPointerMissed={() => {
+        console.log("Pointer missed");
+        setWeaponSelected(null);
+      }}
       camera={{
         position: [centerX, 10, centerZ + 10],
         fov: 50,

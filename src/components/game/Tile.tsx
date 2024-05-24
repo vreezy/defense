@@ -1,9 +1,8 @@
-import React, { useCallback, useRef, useState } from "react";
-import { ThreeEvent, useFrame, useThree } from "@react-three/fiber";
-import { Mesh } from "three";
+import React, { useCallback, useEffect } from "react";
 import { useGameStore } from "@/game/store";
 import { positionEquals } from "@/game/utils/positionEquals";
 import { checkPaths } from "@/game/utils/pathfinding";
+import useClickOrDrag from "@/game/utils/useClickOrDrag";
 
 export function Tile({
   position,
@@ -12,33 +11,17 @@ export function Tile({
   position: [number, number];
   color?: string;
 }) {
-  const meshRef = useRef<Mesh>(null);
-  const [hovering, setHovering] = useState(false);
-  const [dragDistance, setDragDistance] = useState(0);
-  const { raycaster, mouse, camera, scene } = useThree();
   const {
     enemies,
     weapons,
     spawnWeapon,
-    removeWeapon,
     grid,
     weaponSpawnState,
+    setWeaponSelected,
   } = useGameStore((state) => state);
 
-  useFrame(() => {
-    if (!meshRef.current) return;
-
-    raycaster.setFromCamera(mouse, camera);
-    const intersects = raycaster.intersectObjects(scene.children);
-
-    if (intersects.length > 0 && intersects[0].object === meshRef.current) {
-      setHovering(true);
-    } else {
-      setHovering(false);
-    }
-  });
-
-  const trySpawnWeapon = useCallback(() => {
+  const onClick = useCallback(() => {
+    setWeaponSelected(null);
     if (weaponSpawnState !== "sphere") return;
     console.log("Trying to spawn weapon at", position);
     const taken = weapons.find((weapon) =>
@@ -46,7 +29,6 @@ export function Tile({
     );
     if (taken) {
       console.log("Position already taken");
-      removeWeapon(taken.id);
       return;
     }
     if (!checkPaths(enemies, grid, [...weapons, { position }])) {
@@ -57,32 +39,12 @@ export function Tile({
     spawnWeapon(position);
   }, [position, weapons, spawnWeapon]);
 
-  const handlePointerDown = () => {
-    setDragDistance(0);
-  };
-
-  const handlePointerUp = () => {
-    if (dragDistance < 10 && hovering) {
-      trySpawnWeapon();
-    }
-    setDragDistance(0);
-  };
-
-  const handlePointerMove = (event: ThreeEvent<PointerEvent>) => {
-    const deltaDistance = Math.sqrt(
-      Math.pow(event.movementX, 2) + Math.pow(event.movementY, 2)
-    );
-    setDragDistance((prev) => prev + deltaDistance);
-  };
+  const { props, hovering } = useClickOrDrag({
+    onClick,
+  });
 
   return (
-    <mesh
-      ref={meshRef}
-      position={[position[0], hovering ? 0.05 : 0, position[1]]}
-      onPointerDown={handlePointerDown}
-      onPointerUp={handlePointerUp}
-      onPointerMove={handlePointerMove}
-    >
+    <mesh position={[position[0], hovering ? 0.05 : 0, position[1]]} {...props}>
       <boxGeometry args={[1, hovering ? 0.2 : 0.1, 1]} />
       <meshStandardMaterial color={color} />
     </mesh>

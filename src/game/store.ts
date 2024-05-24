@@ -8,6 +8,7 @@ export interface GameState {
   enemies: Enemy[];
   weapons: Weapon[];
   weaponSpawnState: WeaponSpawnState;
+  weaponSelected: Weapon | null;
 }
 
 export interface GameActions {
@@ -19,6 +20,7 @@ export interface GameActions {
   removeWeapon: (id: string) => void;
 
   setWeaponSpawnState: (state: WeaponSpawnState) => void;
+  setWeaponSelected: (weapon: Weapon | null) => void;
 }
 export type GameStore = GameState & GameActions;
 
@@ -32,6 +34,7 @@ export const useGameStore = create<GameStore>()((set) => ({
   enemies: [],
   weapons: [],
   weaponSpawnState: null,
+  weaponSelected: null,
 
   spawnEnemy: (position: [number, number]) =>
     set((state) => ({
@@ -74,5 +77,15 @@ export const useGameStore = create<GameStore>()((set) => ({
     })),
 
   setWeaponSpawnState: (state: WeaponSpawnState) =>
-    set({ weaponSpawnState: state }),
+    set((prev) => ({
+      ...prev,
+      weaponSpawnState: state,
+      weaponSelected: state === null ? prev.weaponSelected : null,
+    })),
+  setWeaponSelected: (weapon: Weapon | null) =>
+    set((prev) => ({
+      ...prev,
+      weaponSelected: weapon,
+      weaponSpawnState: weapon === null ? prev.weaponSpawnState : null,
+    })),
 }));

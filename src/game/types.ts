@@ -8,6 +8,7 @@ export interface Enemy {
 export interface Weapon {
   id: string;
   position: [number, number];
+  radius: number;
 }
 
 export interface Grid {

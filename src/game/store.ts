@@ -56,6 +56,7 @@ export const useGameStore = create<GameStore>()((set) => ({
         {
           id: `${Date.now()}`,
           position,
+          radius: 0.5,
         },
       ],
     })),

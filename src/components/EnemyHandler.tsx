@@ -6,11 +6,18 @@ import useIntervalFrame from "@/game/utils/useIntervalFrame";
 import { useFrame } from "@react-three/fiber";
 import { getNextDirection } from "@/game/utils/getNextDirection";
 import { positionEquals } from "@/game/utils/positionEquals";
+import { useMemo } from "react";
 
 export default function EnemyHandler() {
-  const { grid, enemies, spawnEnemy, updateEnemy, removeEnemy } = useGameStore(
-    (state) => state
-  );
+  const { grid, enemies, weapons, spawnEnemy, updateEnemy, removeEnemy } =
+    useGameStore((state) => state);
+
+  const obstacles = useMemo(() => {
+    return weapons.map((weapon) => ({
+      position: weapon.position,
+      radius: weapon.radius,
+    }));
+  }, [weapons]);
 
   useIntervalFrame(() => {
     spawnEnemy(grid.start);
@@ -18,7 +25,7 @@ export default function EnemyHandler() {
 
   useFrame(() => {
     enemies.forEach((enemy) => {
-      const nextDirection = getNextDirection(grid, enemy, []);
+      const nextDirection = getNextDirection(enemy.position, grid, obstacles);
       const position: [number, number] = [
         enemy.position[0] + Math.cos(nextDirection) * enemy.speed,
         enemy.position[1] + Math.sin(nextDirection) * enemy.speed,

@@ -4,7 +4,6 @@ import React, { useEffect } from "react";
 import { MeshProps } from "@react-three/fiber";
 import { useGameStore } from "@/game/store";
 import { type Weapon } from "@/game/types";
-import useClickOrDrag from "@/game/utils/useClickOrDrag";
 import { Mesh } from "three";
 
 export function Weapon({
@@ -22,12 +21,14 @@ export function Weapon({
     console.log("Weapon selected", weaponSelected?.id === weapon.id);
   }, [weaponSelected, weapon.id]);
 
-  const { props } = useClickOrDrag<Mesh>({
-    onClick: () => setWeaponSelected(weapon),
-  });
-
   return (
-    <mesh position={[weapon.position[0], 0.3, weapon.position[1]]} {...props}>
+    <mesh
+      position={[weapon.position[0], 0.3, weapon.position[1]]}
+      onClick={(e) => {
+        e.stopPropagation();
+        setWeaponSelected(weapon);
+      }}
+    >
       <boxGeometry args={selected ? [1, 1, 1] : [0.5, 0.5, 0.5]} />
       <meshStandardMaterial color={color} />
     </mesh>

@@ -7,6 +7,7 @@ import { useFrame } from "@react-three/fiber";
 import { getNextDirection } from "@/game/utils/pathfinding";
 import { positionEquals } from "@/game/utils/positionEquals";
 import { useMemo } from "react";
+import { useInterval } from "react-use";
 
 export default function EnemyHandler() {
   const { grid, enemies, weapons, spawnEnemy, updateEnemy, removeEnemy } =
@@ -19,7 +20,7 @@ export default function EnemyHandler() {
     }));
   }, [weapons]);
 
-  useIntervalFrame(() => {
+  useInterval(() => {
     spawnEnemy(grid.start);
   }, 1000);
 
@@ -32,7 +33,7 @@ export default function EnemyHandler() {
       ];
 
       if (positionEquals(position, grid.end)) {
-        removeEnemy(enemy.id);
+        removeEnemy(enemy.id, "fly");
       } else {
         updateEnemy({
           ...enemy,

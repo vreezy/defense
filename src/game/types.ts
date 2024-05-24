@@ -1,9 +1,12 @@
+export type EnemyRemoveType = "fly" | "explode";
+
 export interface Enemy {
   id: string;
   position: [number, number];
   health: number;
   speed: number;
   direction: number;
+  removed?: EnemyRemoveType;
 }
 
 export interface Weapon {

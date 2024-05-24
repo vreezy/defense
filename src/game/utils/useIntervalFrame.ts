@@ -10,6 +10,9 @@ export default function useIntervalFrame(
   useFrame(({ clock }) => {
     const elapsedTime = clock.getElapsedTime() * 1000; // Convert to milliseconds
     if (elapsedTime - lastExecution >= interval) {
+      console.log(
+        `Callback executed at ${elapsedTime}ms, interval: ${interval}ms`
+      );
       callback();
       setLastExecution(elapsedTime);
     }

@@ -1,5 +1,6 @@
 import React from "react";
 import { MeshProps } from "@react-three/fiber";
+import GreenUFOModel from "./models/GreenUFOModel";
 
 interface EnemyProps extends Omit<MeshProps, "position"> {
   position: [number, number];
@@ -8,9 +9,6 @@ interface EnemyProps extends Omit<MeshProps, "position"> {
 
 export const Enemy: React.FC<EnemyProps> = ({ position, color }) => {
   return (
-    <mesh position={[position[0], 0.3, position[1]]}>
-      <sphereGeometry args={[0.25, 32, 16]} />
-      <meshStandardMaterial color={color} />
-    </mesh>
+    <GreenUFOModel position={[position[0], 0.2, position[1]]} scale={0.5} />
   );
 };

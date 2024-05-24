@@ -26,9 +26,6 @@ export default function EnemyHandler() {
   useFrame(() => {
     enemies.forEach((enemy, i) => {
       const direction = getNextDirection(enemy, grid, obstacles);
-      if (i == 0) {
-        console.log("Next direction", direction);
-      }
       const position: [number, number] = [
         enemy.position[0] + Math.cos(direction) * enemy.speed,
         enemy.position[1] + Math.sin(direction) * enemy.speed,

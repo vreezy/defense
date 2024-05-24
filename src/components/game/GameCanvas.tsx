@@ -20,12 +20,13 @@ function iterateGrid(
 }
 function getTileColor(grid: Grid, rowIndex: number, colIndex: number) {
   if (grid.start[0] === rowIndex && grid.start[1] === colIndex) {
-    return "#00ff00";
+    return "#00ff00c0";
   }
   if (grid.end[0] === rowIndex && grid.end[1] === colIndex) {
-    return "#ff0000";
+    return "#ff0000c0";
   }
-  return undefined;
+  // return undefined;
+  return (rowIndex + colIndex) % 2 === 0 ? "#ffffff10" : "#00000010";
 }
 
 export default function GameCanvas() {

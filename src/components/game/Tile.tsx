@@ -1,5 +1,5 @@
 import React, { useCallback, useRef, useState } from "react";
-import { useFrame, useThree } from "@react-three/fiber";
+import { ThreeEvent, useFrame, useThree } from "@react-three/fiber";
 import { Mesh } from "three";
 import { useGameStore } from "@/game/store";
 import { positionEquals } from "@/game/utils/positionEquals";
@@ -14,11 +14,16 @@ export function Tile({
 }) {
   const meshRef = useRef<Mesh>(null);
   const [hovering, setHovering] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
+  const [dragDistance, setDragDistance] = useState(0);
   const { raycaster, mouse, camera, scene } = useThree();
-  const { enemies, weapons, spawnWeapon, removeWeapon, grid } = useGameStore(
-    (state) => state
-  );
+  const {
+    enemies,
+    weapons,
+    spawnWeapon,
+    removeWeapon,
+    grid,
+    weaponSpawnState,
+  } = useGameStore((state) => state);
 
   useFrame(() => {
     if (!meshRef.current) return;
@@ -34,6 +39,7 @@ export function Tile({
   });
 
   const trySpawnWeapon = useCallback(() => {
+    if (weaponSpawnState !== "sphere") return;
     console.log("Trying to spawn weapon at", position);
     const taken = weapons.find((weapon) =>
       positionEquals(weapon.position, position)
@@ -52,17 +58,21 @@ export function Tile({
   }, [position, weapons, spawnWeapon]);
 
   const handlePointerDown = () => {
-    setIsDragging(false);
+    setDragDistance(0);
   };
 
   const handlePointerUp = () => {
-    if (!isDragging && hovering) {
+    if (dragDistance < 10 && hovering) {
       trySpawnWeapon();
     }
+    setDragDistance(0);
   };
 
-  const handlePointerMove = () => {
-    setIsDragging(true);
+  const handlePointerMove = (event: ThreeEvent<PointerEvent>) => {
+    const deltaDistance = Math.sqrt(
+      Math.pow(event.movementX, 2) + Math.pow(event.movementY, 2)
+    );
+    setDragDistance((prev) => prev + deltaDistance);
   };
 
   return (

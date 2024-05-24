@@ -2,11 +2,14 @@ import { create } from "zustand";
 import { Enemy, Grid, Weapon } from "./types";
 import { getAngle } from "./utils/getAngle";
 
+export type WeaponSpawnState = "sphere" | null;
 export interface GameState {
   grid: Grid;
   enemies: Enemy[];
   weapons: Weapon[];
+  weaponSpawnState: WeaponSpawnState;
 }
+
 export interface GameActions {
   spawnEnemy: (position: [number, number]) => void;
   removeEnemy: (id: string) => void;
@@ -14,6 +17,8 @@ export interface GameActions {
 
   spawnWeapon: (position: [number, number]) => void;
   removeWeapon: (id: string) => void;
+
+  setWeaponSpawnState: (state: WeaponSpawnState) => void;
 }
 export type GameStore = GameState & GameActions;
 
@@ -26,6 +31,7 @@ export const useGameStore = create<GameStore>()((set) => ({
   },
   enemies: [],
   weapons: [],
+  weaponSpawnState: null,
 
   spawnEnemy: (position: [number, number]) =>
     set((state) => ({
@@ -66,4 +72,7 @@ export const useGameStore = create<GameStore>()((set) => ({
     set((state) => ({
       weapons: state.weapons.filter((weapon) => weapon.id !== id),
     })),
+
+  setWeaponSpawnState: (state: WeaponSpawnState) =>
+    set({ weaponSpawnState: state }),
 }));

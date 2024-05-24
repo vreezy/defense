@@ -3,6 +3,7 @@ import { MeshProps, useFrame, useThree } from "@react-three/fiber";
 import { Mesh } from "three";
 import { useGameStore } from "@/game/store";
 import { positionEquals } from "@/game/utils/positionEquals";
+import { checkPath } from "@/game/utils/pathfinding";
 
 interface TileProps extends Omit<MeshProps, "position"> {
   position: [number, number];
@@ -13,7 +14,9 @@ export const Tile: React.FC<TileProps> = ({ position, color }) => {
   const meshRef = useRef<Mesh>(null);
   const [hovering, setHovering] = React.useState(false);
   const { raycaster, mouse, camera, scene } = useThree();
-  const { weapons, spawnWeapon } = useGameStore((state) => state);
+  const { weapons, spawnWeapon, removeWeapon, grid } = useGameStore(
+    (state) => state
+  );
 
   useFrame(() => {
     if (!meshRef.current) return;
@@ -33,10 +36,17 @@ export const Tile: React.FC<TileProps> = ({ position, color }) => {
     const taken = weapons.find((weapon) =>
       positionEquals(weapon.position, position)
     );
-    if (!taken) {
-      console.log("Spawning weapon at", position);
-      spawnWeapon(position);
+    if (taken) {
+      console.log("Position already taken");
+      removeWeapon(taken.id);
+      return;
     }
+    if (!checkPath(grid, weapons, { position })) {
+      console.log("No path to end");
+      return;
+    }
+    console.log("Spawning weapon at", position);
+    spawnWeapon(position);
   }, [position, weapons, spawnWeapon]);
 
   return (

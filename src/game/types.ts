@@ -3,6 +3,7 @@ export interface Enemy {
   position: [number, number];
   health: number;
   speed: number;
+  direction: number;
 }
 
 export interface Weapon {

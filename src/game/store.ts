@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { Enemy, Grid, Weapon } from "./types";
+import { getAngle } from "./utils/getAngle";
 
 export interface GameState {
   grid: Grid;
@@ -35,6 +36,7 @@ export const useGameStore = create<GameStore>()((set) => ({
           position,
           health: 100,
           speed: 0.01,
+          direction: getAngle(state.grid.start, state.grid.end),
         },
       ],
     })),

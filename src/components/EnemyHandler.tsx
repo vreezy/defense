@@ -4,7 +4,7 @@ import { useGameStore } from "@/game/store";
 import { Enemy } from "./Enemy";
 import useIntervalFrame from "@/game/utils/useIntervalFrame";
 import { useFrame } from "@react-three/fiber";
-import { getNextDirection } from "@/game/utils/getNextDirection";
+import { getNextDirection } from "@/game/utils/pathfinding";
 import { positionEquals } from "@/game/utils/positionEquals";
 import { useMemo } from "react";
 
@@ -24,11 +24,14 @@ export default function EnemyHandler() {
   }, 1000);
 
   useFrame(() => {
-    enemies.forEach((enemy) => {
-      const nextDirection = getNextDirection(enemy.position, grid, obstacles);
+    enemies.forEach((enemy, i) => {
+      const direction = getNextDirection(enemy, grid, obstacles);
+      if (i == 0) {
+        console.log("Next direction", direction);
+      }
       const position: [number, number] = [
-        enemy.position[0] + Math.cos(nextDirection) * enemy.speed,
-        enemy.position[1] + Math.sin(nextDirection) * enemy.speed,
+        enemy.position[0] + Math.cos(direction) * enemy.speed,
+        enemy.position[1] + Math.sin(direction) * enemy.speed,
       ];
 
       if (positionEquals(position, grid.end)) {
@@ -37,6 +40,7 @@ export default function EnemyHandler() {
         updateEnemy({
           ...enemy,
           position,
+          direction,
         });
       }
     });

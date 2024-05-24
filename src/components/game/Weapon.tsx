@@ -1,10 +1,20 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { MeshProps } from "@react-three/fiber";
+import { MeshProps, useFrame } from "@react-three/fiber";
 import { useGameStore } from "@/game/store";
 import { type Weapon } from "@/game/types";
-import { Mesh } from "three";
+import BlasterModel from "./models/BlasterModel";
+
+function usePulse(from: number, to: number, speed: number) {
+  const [scale, setScale] = React.useState(from);
+  useFrame(({ clock }) => {
+    const scale =
+      from + (to - from) * (Math.sin(clock.getElapsedTime() * speed) / 2 + 0.5);
+    setScale(scale);
+  });
+  return scale;
+}
 
 export function Weapon({
   weapon,
@@ -20,17 +30,16 @@ export function Weapon({
     setSelected(weaponSelected?.id === weapon.id);
     console.log("Weapon selected", weaponSelected?.id === weapon.id);
   }, [weaponSelected, weapon.id]);
+  const pulse = usePulse(1.1, 1.2, 2);
 
   return (
-    <mesh
-      position={[weapon.position[0], 0.3, weapon.position[1]]}
+    <BlasterModel
+      position={[weapon.position[0], 0.05, weapon.position[1]]}
+      scale={selected ? pulse : 1}
       onClick={(e) => {
         e.stopPropagation();
         setWeaponSelected(weapon);
       }}
-    >
-      <boxGeometry args={selected ? [1, 1, 1] : [0.5, 0.5, 0.5]} />
-      <meshStandardMaterial color={color} />
-    </mesh>
+    />
   );
 }

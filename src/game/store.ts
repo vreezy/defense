@@ -8,7 +8,7 @@ export interface GameState {
   enemies: Enemy[];
   weapons: Weapon[];
   weaponSpawnState: WeaponSpawnState;
-  weaponSelected: Weapon | null;
+  selectedWeapon: string | null;
 }
 
 export interface GameActions {
@@ -18,10 +18,11 @@ export interface GameActions {
   despawnEnemy: (id: string) => void;
 
   spawnWeapon: (position: [number, number]) => void;
+  updateWeapon: (weapon: Weapon) => void;
   removeWeapon: (id: string) => void;
 
   setWeaponSpawnState: (state: WeaponSpawnState) => void;
-  setWeaponSelected: (weapon: Weapon | null) => void;
+  setSelectedWeapon: (id: string | null) => void;
 }
 export type GameStore = GameState & GameActions;
 
@@ -35,7 +36,7 @@ export const useGameStore = create<GameStore>()((set) => ({
   enemies: [],
   weapons: [],
   weaponSpawnState: null,
-  weaponSelected: null,
+  selectedWeapon: null,
 
   spawnEnemy: (position: [number, number]) =>
     set((state) => ({
@@ -77,8 +78,15 @@ export const useGameStore = create<GameStore>()((set) => ({
           spawnTime: Date.now(),
           position,
           radius: 2,
+          focusMode: "nearest",
         },
       ],
+    })),
+  updateWeapon: (update: Weapon) =>
+    set((state) => ({
+      weapons: state.weapons.map((weapon) =>
+        weapon.id === update.id ? { ...weapon, ...update } : weapon
+      ),
     })),
   removeWeapon: (id) =>
     set((state) => ({
@@ -89,12 +97,12 @@ export const useGameStore = create<GameStore>()((set) => ({
     set((prev) => ({
       ...prev,
       weaponSpawnState: state,
-      weaponSelected: state === null ? prev.weaponSelected : null,
+      selectedWeapon: state === null ? prev.selectedWeapon : null,
     })),
-  setWeaponSelected: (weapon: Weapon | null) =>
+  setSelectedWeapon: (id: string | null) =>
     set((prev) => ({
       ...prev,
-      weaponSelected: weapon,
-      weaponSpawnState: weapon === null ? prev.weaponSpawnState : null,
+      selectedWeapon: id,
+      weaponSpawnState: id === null ? prev.weaponSpawnState : null,
     })),
 }));

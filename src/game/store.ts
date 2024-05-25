@@ -42,7 +42,8 @@ export const useGameStore = create<GameStore>()((set) => ({
       enemies: [
         ...state.enemies,
         {
-          id: `${Date.now()}`,
+          id: Date.now().toString(),
+          spawnTime: Date.now(),
           position,
           health: 100,
           speed: 0.01,
@@ -72,9 +73,10 @@ export const useGameStore = create<GameStore>()((set) => ({
       weapons: [
         ...state.weapons,
         {
-          id: `${Date.now()}`,
+          id: Date.now().toString(),
+          spawnTime: Date.now(),
           position,
-          radius: 0.5,
+          radius: 2,
         },
       ],
     })),

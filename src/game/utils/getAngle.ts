@@ -1,8 +1,5 @@
-export function getAngle(
-  start: [number, number],
-  goal: [number, number]
-): number {
-  const dx = goal[0] - start[0];
-  const dy = goal[1] - start[1];
+export function getAngle(from: [number, number], to: [number, number]): number {
+  const dx = to[0] - from[0];
+  const dy = to[1] - from[1];
   return Math.atan2(dy, dx);
 }

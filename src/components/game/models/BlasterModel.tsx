@@ -1,5 +1,7 @@
+"use client";
+
 import * as THREE from "three";
-import React from "react";
+import React, { useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 
@@ -16,7 +18,7 @@ type GLTFResult = GLTF & {
   };
 };
 
-export default function Model(props: JSX.IntrinsicElements["group"]) {
+export default function Model({ ...props }: JSX.IntrinsicElements["group"]) {
   const { nodes, materials } = useGLTF(
     "/models/weapon_blaster.glb"
   ) as GLTFResult;

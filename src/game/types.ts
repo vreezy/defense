@@ -2,6 +2,7 @@ export type EnemyRemoveType = "fly" | "explode";
 
 export interface Enemy {
   id: string;
+  spawnTime: number;
   position: [number, number];
   health: number;
   speed: number;

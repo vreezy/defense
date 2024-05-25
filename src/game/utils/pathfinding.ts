@@ -23,21 +23,27 @@ function getMatrix(grid: Grid, obstacles: Obstacle[]) {
   return matrix;
 }
 
-function findPath(from: [number, number], grid: Grid, obstacles: Obstacle[]) {
+export function findPath(
+  from: [number, number],
+  grid: Grid,
+  obstacles: Obstacle[]
+): [number, number][] | undefined {
   const finder = new PF.AStarFinder({
     diagonalMovement: PF.DiagonalMovement.OnlyWhenNoObstacles,
   });
 
+  // console.log("Finding path", from, [Math.round(from[0]), Math.round(from[1])]);
+
   try {
-    return finder.findPath(
-      Math.floor(from[0]),
-      Math.floor(from[1]),
+    const path = finder.findPath(
+      Math.round(from[0]),
+      Math.round(from[1]),
       grid.end[0],
       grid.end[1],
       new PF.Grid(getMatrix(grid, obstacles))
     );
+    return path.map(([x, y]) => [x, y]);
   } catch (e) {
-    console.error(e);
     return undefined;
   }
 }
@@ -84,4 +90,15 @@ export function checkPath(
 ) {
   const path = findPath(grid.start, grid, [...obstacles, newObstacle]);
   return path && path.length > 0;
+}
+
+export function distanceOfPath(path: [number, number][]): number {
+  let distance = 0;
+  for (let i = 1; i < path.length; i++) {
+    distance += Math.hypot(
+      path[i][0] - path[i - 1][0],
+      path[i][1] - path[i - 1][1]
+    );
+  }
+  return distance;
 }

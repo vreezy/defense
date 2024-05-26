@@ -62,11 +62,12 @@ export function Weapon({
     scale: selected ? pulse : 1,
     config: { tension: 170, friction: 26 },
   });
-
   const [x, setX] = useState(0);
-  useInterval(() => {
-    setX((x) => (x + 0.003) % (Math.PI * 2));
-  }, 10);
+
+  useFrame((state, delta) => {
+    setX((prevX) => (prevX + 0.001 ) % (Math.PI * 2));
+  });
+
 
   useFrame(() => {
     const target = findTarget(
@@ -131,8 +132,6 @@ export function Weapon({
               rotation={[0, x, 0]}
             />
           )}
-        </>
-      )}
 
       <DebugLine
         position={[
@@ -154,6 +153,8 @@ export function Weapon({
         length={1}
         color={"red"}
       />
+        </>
+      )}
     </>
   );
 }

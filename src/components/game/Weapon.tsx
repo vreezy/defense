@@ -16,6 +16,7 @@ import DebugLine from "./utils/DebugLine";
 import { getAngle } from "@/game/utils/getAngle";
 import { angleLerp } from "@/game/utils/angleLerp";
 import { findTarget } from "@/game/utils/findTarget";
+import { useInterval } from "react-use";
 
 function convertAngle(angle: number) {
   return Math.PI - angle + Math.PI / 2;
@@ -62,6 +63,11 @@ export function Weapon({
     config: { tension: 170, friction: 26 },
   });
 
+  const [x, setX] = useState(0);
+  useInterval(() => {
+    setX((x) => (x + 0.003) % (Math.PI * 2));
+  }, 10);
+
   useFrame(() => {
     const target = findTarget(
       weapon,
@@ -106,6 +112,9 @@ export function Weapon({
           <Ring
             position={[weapon.position[0], 0.1, weapon.position[1]]}
             radius={weapon.radius}
+            tube={0.05}
+            dashCount={8}
+            rotation={[0,x,0]}
           />
           {targetRef.current && (
             <Ring
@@ -115,7 +124,11 @@ export function Weapon({
                 targetRef.current.position[1],
               ]}
               radius={0.25}
+              tube={0.03}
               color={"#f54949"}
+              dashCount={4}
+              dashGap={0.5}
+              rotation={[0, x, 0]}
             />
           )}
         </>

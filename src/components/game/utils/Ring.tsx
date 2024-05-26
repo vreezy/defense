@@ -1,27 +1,58 @@
+
 import { useMemo } from "react";
-import { RingGeometry } from "three";
+import { TorusGeometry } from "three";
 
 const Ring = ({
   radius,
+  tube = 0.1,
+  radialSegments = 16,
+  tubularSegments = 100,
   position,
   color = "#000000",
+  dashCount = 0,
+  dashGap = Math.PI / 16,
+  rotation = [0, 0, 0],
 }: {
   radius: number;
+  tube?: number;
+  radialSegments?: number;
+  tubularSegments?: number;
   position: [number, number, number];
   color?: string;
+  dashCount?: number;
+  dashGap?: number;
+  rotation?: [number, number, number];
 }) => {
-  const ringGeometry = useMemo(
-    () => new RingGeometry(radius, radius + 0.1, 32),
-    [radius]
+  const arcLength = useMemo(() => (Math.PI * 2) / dashCount, [dashCount]);
+  const dashArcLength = useMemo(() => arcLength - dashGap, [arcLength, dashGap]);
+  const torusGeometry = useMemo(
+    () => new TorusGeometry(radius, tube, radialSegments, tubularSegments, dashArcLength),
+    [radius, tube, radialSegments, tubularSegments, dashArcLength]
   );
+  const dashes = useMemo(
+    () =>
+      Array.from({ length: dashCount }, (_, i) => {
+        return {
+          rotation: i * arcLength,
+        };
+      }),
+    [arcLength, dashCount]
+  );
+
   return (
-    <mesh
-      position={position}
-      geometry={ringGeometry}
-      rotation={[Math.PI / 2, 0, 0]}
+    <group 
+    position={position}
+      rotation={rotation}
     >
-      <meshBasicMaterial color={color} side={2} />
-    </mesh>
+      {dashes.map(({ rotation }) => (
+        <mesh
+          geometry={torusGeometry}
+          rotation={[Math.PI / 2, 0, rotation]}
+          >
+          <meshBasicMaterial color={color} side={2} />
+        </mesh>
+      ))}
+      </group>
   );
 };
 

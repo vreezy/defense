@@ -44,7 +44,8 @@ export const useGameStore = create<GameStore>()((set) => ({
         {
           id: Date.now().toString(),
           position: [state.grid.start[0], 10, state.grid.start[1]],
-          health: 1,
+          maxHealth: 20,
+          health: 20,
           speed: 0.01,
           direction: getAngle(state.grid.start, state.grid.end),
           spawnedAt: Date.now(),

@@ -3,6 +3,7 @@ export type EnemyState = "spawning" | "moving" | "despawning";
 export interface Enemy {
   id: string;
   position: [number, number, number];
+  maxHealth: number;
   health: number;
   speed: number;
   direction: number;

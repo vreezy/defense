@@ -174,7 +174,7 @@ export default function EnemyHandler() {
                 enemy.position[2],
               ]}
               rotation={[0, 0, -anglesToCamera[i]]}
-              percent={enemy.health}
+              percent={enemy.health / enemy.maxHealth}
               radius={0.03}
               length={0.4}
             />

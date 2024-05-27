@@ -35,7 +35,15 @@ export function Tile({
         console.log("Position already taken");
         return;
       }
-      if (!checkPaths(enemies, grid, [...weapons, { position }])) {
+      if (
+        !checkPaths(
+          enemies.map((enemy) => ({
+            position: [enemy.position[0], enemy.position[2]],
+          })),
+          grid,
+          [...weapons, { position }]
+        )
+      ) {
         console.log("No path to end");
         return;
       }

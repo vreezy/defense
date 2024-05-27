@@ -14,7 +14,6 @@ export interface GameState {
 export interface GameActions {
   spawnEnemy: (position: [number, number]) => void;
   updateEnemy: (enemy: Enemy) => void;
-  removeEnemy: (id: string, type: EnemyRemoveType) => void;
   despawnEnemy: (id: string) => void;
 
   spawnWeapon: (position: [number, number]) => void;
@@ -38,24 +37,26 @@ export const useGameStore = create<GameStore>()((set) => ({
   weaponSpawnState: null,
   selectedWeapon: null,
 
-  spawnEnemy: (position: [number, number]) =>
+  spawnEnemy: () =>
     set((state) => ({
       enemies: [
         ...state.enemies,
         {
           id: Date.now().toString(),
-          spawnTime: Date.now(),
-          position,
+          position: [state.grid.start[0], 10, state.grid.start[1]],
           health: 100,
           speed: 0.01,
           direction: getAngle(state.grid.start, state.grid.end),
+          spawnedAt: Date.now(),
+          state: "spawning",
         },
       ],
     })),
-  despawnEnemy: (id: string) =>
+  despawnEnemy: (id: string) => {
     set((state) => ({
       enemies: state.enemies.filter((enemy) => enemy.id !== id),
-    })),
+    }));
+  },
   removeEnemy: (id: string, type: EnemyRemoveType) =>
     set((state) => ({
       enemies: state.enemies.map((enemy) =>

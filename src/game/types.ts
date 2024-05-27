@@ -1,18 +1,17 @@
 export type EnemyRemoveType = "fly" | "explode";
-// export type WeaponFocusMode = "nearest" | "oldest" | "youngest";
-export const WeaponFocusModes = ["nearest", "oldest", "youngest"] as const;
-export type WeaponFocusMode = (typeof WeaponFocusModes)[number];
-
+export type EnemyState = "spawning" | "moving" | "despawning";
 export interface Enemy {
   id: string;
-  spawnTime: number;
-  position: [number, number];
+  position: [number, number, number];
   health: number;
   speed: number;
   direction: number;
-  removed?: EnemyRemoveType;
+  spawnedAt: number;
+  state: EnemyState;
 }
 
+export const WeaponFocusModes = ["nearest", "oldest", "youngest"] as const;
+export type WeaponFocusMode = (typeof WeaponFocusModes)[number];
 export interface Weapon {
   id: string;
   position: [number, number];

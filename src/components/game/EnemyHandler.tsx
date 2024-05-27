@@ -30,61 +30,64 @@ export default function EnemyHandler() {
     }));
   }, [weapons]);
 
-  const handleEnemyUpdate = useCallback((enemy: Enemy, delta: number) => {
-    switch (enemy.state) {
-      case "spawning":
-        const nextHeight = enemy.position[1] - 0.1;
-        if (nextHeight <= 0) {
+  const handleEnemyUpdate = useCallback(
+    (enemy: Enemy, delta: number) => {
+      switch (enemy.state) {
+        case "spawning":
+          const nextHeight = enemy.position[1] - 0.1;
+          if (nextHeight <= 0) {
+            updateEnemy({
+              ...enemy,
+              position: [enemy.position[0], 0, enemy.position[2]],
+              state: "moving",
+            });
+          } else {
+            updateEnemy({
+              ...enemy,
+              position: [enemy.position[0], nextHeight, enemy.position[2]],
+            });
+          }
+          break;
+        case "moving":
+          const direction = getNextDirection(
+            {
+              position: [enemy.position[0], enemy.position[2]],
+              direction: enemy.direction,
+            },
+            grid,
+            obstacles
+          );
+          const speed = enemy.speed * delta * 100;
+          const nextX = enemy.position[0] + Math.cos(direction) * speed;
+          const nextZ = enemy.position[2] + Math.sin(direction) * speed;
+          const nextState = positionEquals([nextX, nextZ], grid.end)
+            ? "despawning"
+            : enemy.state;
           updateEnemy({
             ...enemy,
-            position: [enemy.position[0], 0, enemy.position[2]],
-            state: "moving",
+            position: [nextX, enemy.position[1], nextZ],
+            direction,
+            state: nextState,
           });
-        } else {
-          updateEnemy({
-            ...enemy,
-            position: [enemy.position[0], nextHeight, enemy.position[2]],
-          });
-        }
-        break;
-      case "moving":
-        const direction = getNextDirection(
-          {
-            position: [enemy.position[0], enemy.position[2]],
-            direction: enemy.direction,
-          },
-          grid,
-          obstacles
-        );
-        const speed = enemy.speed * delta * 100;
-        const nextX = enemy.position[0] + Math.cos(direction) * speed;
-        const nextZ = enemy.position[2] + Math.sin(direction) * speed;
-        const nextState = positionEquals([nextX, nextZ], grid.end)
-          ? "despawning"
-          : enemy.state;
-        updateEnemy({
-          ...enemy,
-          position: [nextX, enemy.position[1], nextZ],
-          direction,
-          state: nextState,
-        });
-        break;
-      case "despawning":
-        if (enemy.position[1] >= 10) {
-          despawnEnemy(enemy.id);
-        } else {
-          updateEnemy({
-            ...enemy,
-            position: [
-              enemy.position[0],
-              enemy.position[1] + 0.1,
-              enemy.position[2],
-            ],
-          });
-        }
-        break;
-    }
-  }, []);
+          break;
+        case "despawning":
+          if (enemy.position[1] >= 10) {
+            despawnEnemy(enemy.id);
+          } else {
+            updateEnemy({
+              ...enemy,
+              position: [
+                enemy.position[0],
+                enemy.position[1] + 0.1,
+                enemy.position[2],
+              ],
+            });
+          }
+          break;
+      }
+    },
+    [obstacles, grid, updateEnemy, despawnEnemy]
+  );
 
   useFrame((_, delta) => {
     enemies.forEach((enemy, index) => {

@@ -13,6 +13,7 @@ export default function UIMenu() {
     weapons,
     setSelectedWeapon,
     updateWeapon,
+    removeWeapon,
   } = useGameStore((state) => state);
 
   const selectedWeapon = useMemo(
@@ -53,6 +54,14 @@ export default function UIMenu() {
               </button>
             ))}
           </div>
+          <button
+            className="px-4 py-3 font-semibold rounded-xl bg-red-300"
+            onClick={() => {
+              removeWeapon(selectedWeapon.id);
+            }}
+          >
+            Remove
+          </button>
         </div>
       ) : (
         <button

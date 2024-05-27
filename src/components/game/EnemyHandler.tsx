@@ -1,4 +1,4 @@
-import { useRef, useMemo, useCallback } from "react";
+import { useRef, useMemo, useCallback, useState } from "react";
 import { InstancedMesh, Object3D } from "three";
 import { useFrame } from "@react-three/fiber";
 import { useGameStore } from "@/game/store";
@@ -7,6 +7,7 @@ import { getNextDirection } from "@/game/utils/pathfinding";
 import { positionEquals } from "@/game/utils/positionEquals";
 import { useInterval } from "react-use";
 import { useGreenUFOModel } from "./models/GreenUFOModel";
+import HealthBar from "./utils/HealthBar";
 
 export default function EnemyHandler() {
   const { grid, enemies, spawnEnemy, updateEnemy, despawnEnemy, weapons } =
@@ -16,6 +17,8 @@ export default function EnemyHandler() {
   const instancedMeshRef1 = useRef<InstancedMesh>(null);
   const instancedMeshRef2 = useRef<InstancedMesh>(null);
   const instancedMeshRef3 = useRef<InstancedMesh>(null);
+
+  const [anglesToCamera, setAnglesToCamera] = useState<number[]>([]);
 
   const object3D = useMemo(() => new Object3D(), []);
 
@@ -89,8 +92,20 @@ export default function EnemyHandler() {
     [obstacles, grid, updateEnemy, despawnEnemy]
   );
 
-  useFrame((_, delta) => {
+  useFrame(({ camera }, delta) => {
+    const anglesToCamera: number[] = [];
+
     enemies.forEach((enemy, index) => {
+      const vector = camera.position.clone().sub({
+        x: enemy.position[0],
+        y: enemy.position[1],
+        z: enemy.position[2],
+      });
+      // Calculate the angle to rotate along the y-axis
+      const angle = Math.atan2(vector.x, vector.z);
+      // Apply the rotation
+      anglesToCamera.push(angle);
+
       handleEnemyUpdate(enemy, delta);
 
       if (
@@ -118,6 +133,8 @@ export default function EnemyHandler() {
       instancedMeshRef2.current.instanceMatrix.needsUpdate = true;
     if (instancedMeshRef3.current)
       instancedMeshRef3.current.instanceMatrix.needsUpdate = true;
+
+    setAnglesToCamera(anglesToCamera);
   });
 
   return (
@@ -146,6 +163,23 @@ export default function EnemyHandler() {
           enemies.length,
         ]}
       />
+      {enemies.map(
+        (enemy, i) =>
+          enemy.state === "moving" && (
+            <HealthBar
+              key={enemy.id}
+              position={[
+                enemy.position[0],
+                enemy.position[1] + 0.5,
+                enemy.position[2],
+              ]}
+              rotation={[0, 0, -anglesToCamera[i]]}
+              percent={enemy.health / 100}
+              radius={0.03}
+              length={0.4}
+            />
+          )
+      )}
     </>
   );
 }

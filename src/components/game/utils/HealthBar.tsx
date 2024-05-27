@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { Cylinder } from "@react-three/drei";
 
@@ -20,7 +22,19 @@ export default function HealthBar({
   const redLength = length * (1 - percent);
 
   return (
-    <group position={position} rotation={rotation} scale={scale}>
+    <group
+      position={[
+        position[0], // - length / 2,
+        position[1] - radius / 2,
+        position[2], // - length / 2,
+      ]}
+      rotation={[
+        Math.PI / 2 + rotation[0],
+        rotation[1],
+        Math.PI / 2 + rotation[2],
+      ]}
+      scale={scale}
+    >
       <Cylinder
         args={[radius, radius, redLength, 32, 1, false]}
         position={[0, -length / 2 + redLength / 2, 0]}

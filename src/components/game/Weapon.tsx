@@ -55,6 +55,12 @@ export function Weapon({
     },
     [weapon.position]
   );
+  const weakestHeuristic = (enemy: Enemy) => {
+    return enemy.health;
+  };
+  const strongestHeuristic = (enemy: Enemy) => {
+    return -enemy.health;
+  };
 
   const { scale } = useSpring({
     scale: selected ? pulse : 1,
@@ -73,7 +79,11 @@ export function Weapon({
         ? closestHeuristic
         : weapon.focusMode === "oldest"
         ? oldestHeuristic
-        : youngestHeuristic
+        : weapon.focusMode === "youngest"
+        ? youngestHeuristic
+        : weapon.focusMode === "weakest"
+        ? weakestHeuristic
+        : strongestHeuristic
     );
 
     if (timer > weapon.speed && target) {

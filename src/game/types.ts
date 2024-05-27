@@ -10,7 +10,13 @@ export interface Enemy {
   state: EnemyState;
 }
 
-export const WeaponFocusModes = ["nearest", "oldest", "youngest"] as const;
+export const WeaponFocusModes = [
+  "nearest",
+  "oldest",
+  "youngest",
+  "weakest",
+  "strongest",
+] as const;
 export type WeaponFocusMode = (typeof WeaponFocusModes)[number];
 export interface Weapon {
   id: string;

@@ -8,9 +8,13 @@ export function findTarget(
   let min = Infinity;
   let target: Enemy | null = null;
   enemies.forEach((enemy) => {
+    if (enemy.state !== "moving") {
+      return;
+    }
+
     const dist = Math.hypot(
       enemy.position[0] - weapon.position[0],
-      enemy.position[1] - weapon.position[1]
+      enemy.position[2] - weapon.position[1]
     );
     if (dist > weapon.radius) {
       return;

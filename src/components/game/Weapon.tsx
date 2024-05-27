@@ -51,7 +51,7 @@ export function Weapon({
     (enemy: Enemy) => {
       return Math.hypot(
         enemy.position[0] - weapon.position[0],
-        enemy.position[1] - weapon.position[1]
+        enemy.position[2] - weapon.position[1]
       );
     },
     [weapon.position]
@@ -120,7 +120,7 @@ export function Weapon({
               position={[
                 targetRef.current.position[0],
                 0.1,
-                targetRef.current.position[1],
+                targetRef.current.position[2],
               ]}
               radius={0.25}
               tube={0.03}

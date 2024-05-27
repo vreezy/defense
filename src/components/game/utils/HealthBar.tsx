@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useMemo } from "react";
 import { Cylinder } from "@react-three/drei";
 
 export default function HealthBar({
@@ -9,7 +9,7 @@ export default function HealthBar({
   scale = [1, 1, 1],
   radius = 0.1,
   length = 1,
-  percent,
+  percent: rawPercent,
 }: {
   position: [number, number, number];
   rotation: [number, number, number];
@@ -18,6 +18,10 @@ export default function HealthBar({
   length?: number;
   percent: number;
 }) {
+  const percent = useMemo(
+    () => Math.min(1, Math.max(0, rawPercent)),
+    [rawPercent]
+  );
   const greenLength = length * percent;
   const redLength = length * (1 - percent);
 

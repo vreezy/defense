@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { MeshProps, useFrame } from "@react-three/fiber";
 import { useGameStore } from "@/game/store";
-import { Enemy, type Weapon as WeaponType } from "@/game/types";
+import { Enemy, EnemyState, type Weapon as WeaponType } from "@/game/types";
 import BlasterModel from "./models/BlasterModel";
 import { useSpring } from "@react-spring/three";
 import usePulse from "@/game/utils/usePulse";
@@ -26,9 +26,8 @@ export function Weapon({
 }: Omit<MeshProps, "position"> & {
   weapon: WeaponType;
 }) {
-  const { enemies, setSelectedWeapon, selectedWeapon, grid } = useGameStore(
-    (state) => state
-  );
+  const { enemies, setSelectedWeapon, selectedWeapon, grid, updateEnemy } =
+    useGameStore((state) => state);
   const selected = useMemo(
     () => selectedWeapon === weapon.id,
     [selectedWeapon, weapon.id]
@@ -62,12 +61,11 @@ export function Weapon({
     config: { tension: 170, friction: 26 },
   });
   const [x, setX] = useState(0);
-
+  const [timer, setTimer] = useState(0);
   useFrame((state, delta) => {
     setX((prevX) => (prevX + 0.001) % (Math.PI * 2));
-  });
+    setTimer((prev) => prev + delta);
 
-  useFrame(() => {
     const target = findTarget(
       weapon,
       enemies,
@@ -78,6 +76,22 @@ export function Weapon({
         : youngestHeuristic
     );
 
+    if (timer > weapon.speed && target) {
+      setTimer(0);
+      const nextHealth = target.health - weapon.damage;
+      const change =
+        nextHealth <= 0
+          ? {
+              state: "despawning" as EnemyState,
+            }
+          : {
+              health: nextHealth,
+            };
+      updateEnemy({
+        ...target,
+        ...change,
+      });
+    }
     if (target && target !== targetRef.current) {
       rawDirectionRef.current = convertAngle(
         getAngle(weapon.position, [target.position[0], target.position[2]])

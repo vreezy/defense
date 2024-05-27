@@ -17,6 +17,8 @@ export interface Weapon {
   position: [number, number];
   radius: number;
   focusMode: WeaponFocusMode;
+  speed: number;
+  damage: number;
 }
 
 export interface Grid {

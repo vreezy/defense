@@ -44,7 +44,7 @@ export const useGameStore = create<GameStore>()((set) => ({
         {
           id: Date.now().toString(),
           position: [state.grid.start[0], 10, state.grid.start[1]],
-          health: 100,
+          health: 1,
           speed: 0.01,
           direction: getAngle(state.grid.start, state.grid.end),
           spawnedAt: Date.now(),
@@ -80,6 +80,8 @@ export const useGameStore = create<GameStore>()((set) => ({
           position,
           radius: 2,
           focusMode: "nearest",
+          speed: 0.1,
+          damage: 0.1,
         },
       ],
     })),

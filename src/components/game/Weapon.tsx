@@ -16,7 +16,6 @@ import DebugLine from "./utils/DebugLine";
 import { getAngle } from "@/game/utils/getAngle";
 import { angleLerp } from "@/game/utils/angleLerp";
 import { findTarget } from "@/game/utils/findTarget";
-import { useInterval } from "react-use";
 
 function convertAngle(angle: number) {
   return Math.PI - angle + Math.PI / 2;
@@ -43,10 +42,10 @@ export function Weapon({
   const pulse = usePulse(1.15, 1.3, 2);
 
   const oldestHeuristic = useCallback((enemy: Enemy) => {
-    return enemy.spawnTime.valueOf();
+    return enemy.spawnedAt.valueOf();
   }, []);
   const youngestHeuristic = (enemy: Enemy) => {
-    return -enemy.spawnTime.valueOf();
+    return -enemy.spawnedAt.valueOf();
   };
   const closestHeuristic = useCallback(
     (enemy: Enemy) => {
@@ -65,9 +64,8 @@ export function Weapon({
   const [x, setX] = useState(0);
 
   useFrame((state, delta) => {
-    setX((prevX) => (prevX + 0.001 ) % (Math.PI * 2));
+    setX((prevX) => (prevX + 0.001) % (Math.PI * 2));
   });
-
 
   useFrame(() => {
     const target = findTarget(
@@ -82,7 +80,7 @@ export function Weapon({
 
     if (target && target !== targetRef.current) {
       rawDirectionRef.current = convertAngle(
-        getAngle(weapon.position, target.position)
+        getAngle(weapon.position, [target.position[0], target.position[2]])
       );
       targetRef.current = target;
     } else if (!target) {
@@ -115,7 +113,7 @@ export function Weapon({
             radius={weapon.radius}
             tube={0.05}
             dashCount={8}
-            rotation={[0,x,0]}
+            rotation={[0, x, 0]}
           />
           {targetRef.current && (
             <Ring
@@ -133,26 +131,26 @@ export function Weapon({
             />
           )}
 
-      <DebugLine
-        position={[
-          weapon.position[0] - Math.sin(directionRef.current) * 0.5,
-          0.05,
-          weapon.position[1] - Math.cos(directionRef.current) * 0.5,
-        ]}
-        rotation={[0, directionRef.current + Math.PI / 2, Math.PI / 2]}
-        length={1}
-        color={"green"}
-      />
-      <DebugLine
-        position={[
-          weapon.position[0] - Math.sin(rawDirectionRef.current) * 0.5,
-          0.05,
-          weapon.position[1] - Math.cos(rawDirectionRef.current) * 0.5,
-        ]}
-        rotation={[0, rawDirectionRef.current + Math.PI / 2, Math.PI / 2]}
-        length={1}
-        color={"red"}
-      />
+          <DebugLine
+            position={[
+              weapon.position[0] - Math.sin(directionRef.current) * 0.5,
+              0.05,
+              weapon.position[1] - Math.cos(directionRef.current) * 0.5,
+            ]}
+            rotation={[0, directionRef.current + Math.PI / 2, Math.PI / 2]}
+            length={1}
+            color={"green"}
+          />
+          <DebugLine
+            position={[
+              weapon.position[0] - Math.sin(rawDirectionRef.current) * 0.5,
+              0.05,
+              weapon.position[1] - Math.cos(rawDirectionRef.current) * 0.5,
+            ]}
+            rotation={[0, rawDirectionRef.current + Math.PI / 2, Math.PI / 2]}
+            length={1}
+            color={"red"}
+          />
         </>
       )}
     </>

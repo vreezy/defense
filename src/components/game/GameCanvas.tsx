@@ -47,6 +47,7 @@ export default function GameCanvas() {
       }}
     >
       <Environment preset="apartment" />
+      <color attach="background" args={["#5eabe6"]} />
       <OrbitControls
         enablePan={false}
         target={[centerX, 0, centerZ]}

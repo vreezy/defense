@@ -16,9 +16,8 @@ export function Tile({
     enemies,
     weapons,
     spawnWeapon,
-    removeWeapon,
     grid,
-    weaponSpawnState,
+    weaponSpawnType,
     setSelectedWeapon,
   } = useGameStore((state) => state);
 
@@ -26,7 +25,7 @@ export function Tile({
     (event: ThreeEvent<MouseEvent>) => {
       console.log("Clicked tile", position);
       setSelectedWeapon(null);
-      if (weaponSpawnState !== "sphere") return;
+      if (weaponSpawnType !== "Turret") return;
       console.log("Trying to spawn weapon at", position);
       const taken = weapons.find((weapon) =>
         positionEquals(weapon.position, position)

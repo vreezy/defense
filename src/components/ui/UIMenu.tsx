@@ -1,14 +1,14 @@
 "use client";
 
-import { useGameStore } from "@/game/store";
+import { WeaponTypes, useGameStore } from "@/game/store";
 import { WeaponFocusModes } from "@/game/types";
 import { cn } from "@/utils/cn";
 import { useEffect, useMemo } from "react";
 
 export default function UIMenu() {
   const {
-    setWeaponSpawnState,
-    weaponSpawnState,
+    setWeaponSpawnType,
+    weaponSpawnType,
     selectedWeapon: id,
     weapons,
     setSelectedWeapon,
@@ -64,17 +64,22 @@ export default function UIMenu() {
           </button>
         </div>
       ) : (
-        <button
-          className={cn(
-            "px-4 py-3 font-semibold rounded-xl",
-            weaponSpawnState ? "bg-green-300" : "bg-blue-300"
-          )}
-          onClick={() => {
-            setWeaponSpawnState(weaponSpawnState ? null : "sphere");
-          }}
-        >
-          {"Sphere"}
-        </button>
+        <>
+          {WeaponTypes.map((type) => (
+            <button
+              key={type}
+              className={cn(
+                "px-4 py-3 font-semibold rounded-xl",
+                weaponSpawnType === type ? "bg-green-300" : "bg-blue-300"
+              )}
+              onClick={() => {
+                setWeaponSpawnType(weaponSpawnType === type ? null : type);
+              }}
+            >
+              {type}
+            </button>
+          ))}
+        </>
       )}
     </div>
   );

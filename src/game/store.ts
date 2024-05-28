@@ -2,12 +2,13 @@ import { create } from "zustand";
 import { Enemy, EnemyRemoveType, Grid, Weapon } from "./types";
 import { getAngle } from "./utils/getAngle";
 
-export type WeaponSpawnState = "sphere" | null;
+export const WeaponTypes = ["Turret"] as const;
+export type WeaponType = (typeof WeaponTypes)[number] | null;
 export interface GameState {
   grid: Grid;
   enemies: Enemy[];
   weapons: Weapon[];
-  weaponSpawnState: WeaponSpawnState;
+  weaponSpawnType: WeaponType;
   selectedWeapon: string | null;
 }
 
@@ -20,7 +21,7 @@ export interface GameActions {
   updateWeapon: (weapon: Weapon) => void;
   removeWeapon: (id: string) => void;
 
-  setWeaponSpawnState: (state: WeaponSpawnState) => void;
+  setWeaponSpawnType: (type: WeaponType) => void;
   setSelectedWeapon: (id: string | null) => void;
 }
 export type GameStore = GameState & GameActions;
@@ -34,7 +35,7 @@ export const useGameStore = create<GameStore>()((set) => ({
   },
   enemies: [],
   weapons: [],
-  weaponSpawnState: null,
+  weaponSpawnType: null,
   selectedWeapon: null,
 
   spawnEnemy: () =>
@@ -97,16 +98,16 @@ export const useGameStore = create<GameStore>()((set) => ({
       weapons: state.weapons.filter((weapon) => weapon.id !== id),
     })),
 
-  setWeaponSpawnState: (state: WeaponSpawnState) =>
+  setWeaponSpawnType: (type: WeaponType) =>
     set((prev) => ({
       ...prev,
-      weaponSpawnState: state,
-      selectedWeapon: state === null ? prev.selectedWeapon : null,
+      weaponSpawnType: type,
+      selectedWeapon: type === null ? prev.selectedWeapon : null,
     })),
   setSelectedWeapon: (id: string | null) =>
     set((prev) => ({
       ...prev,
       selectedWeapon: id,
-      weaponSpawnState: id === null ? prev.weaponSpawnState : null,
+      weaponSpawnType: id === null ? prev.weaponSpawnType : null,
     })),
 }));

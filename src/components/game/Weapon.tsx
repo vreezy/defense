@@ -1,10 +1,4 @@
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-  useRef,
-} from "react";
+import React, { useMemo, useState, useRef } from "react";
 import { MeshProps, useFrame } from "@react-three/fiber";
 import { useGameStore } from "@/game/store";
 import { Enemy, EnemyState, type Weapon as WeaponType } from "@/game/types";

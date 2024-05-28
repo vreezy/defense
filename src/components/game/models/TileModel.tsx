@@ -60,4 +60,6 @@ const Model = forwardRef(
 
 useGLTF.preload("/models/tile.glb");
 
+Model.displayName = "TileModel";
+
 export default Model;

@@ -49,7 +49,15 @@ export function Tile({
       console.log("Spawning weapon at", position);
       spawnWeapon(position);
     },
-    [position, weapons, spawnWeapon]
+    [
+      position,
+      weapons,
+      spawnWeapon,
+      enemies,
+      grid,
+      weaponSpawnType,
+      setSelectedWeapon,
+    ]
   );
 
   return (

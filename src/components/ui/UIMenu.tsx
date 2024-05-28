@@ -1,7 +1,7 @@
 "use client";
 
-import { WeaponTypes, useGameStore } from "@/game/store";
-import { WeaponFocusModes } from "@/game/types";
+import { useGameStore } from "@/game/store";
+import { WeaponFocusModes, WeaponTypes } from "@/game/types";
 import { cn } from "@/utils/cn";
 import { useEffect, useMemo } from "react";
 
@@ -64,7 +64,7 @@ export default function UIMenu() {
           </button>
         </div>
       ) : (
-        <>
+        <div className="flex flex-row gap-2">
           {WeaponTypes.map((type) => (
             <button
               key={type}
@@ -79,7 +79,7 @@ export default function UIMenu() {
               {type}
             </button>
           ))}
-        </>
+        </div>
       )}
     </div>
   );

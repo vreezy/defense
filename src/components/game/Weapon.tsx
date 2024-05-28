@@ -10,6 +10,7 @@ import DebugLine from "./utils/DebugLine";
 import { getAngle } from "@/game/utils/getAngle";
 import { angleLerp } from "@/game/utils/angleLerp";
 import { findTarget } from "@/game/utils/findTarget";
+import CannonModel from "./models/CannonModel";
 
 function convertAngle(angle: number) {
   return Math.PI - angle + Math.PI / 2;
@@ -81,15 +82,28 @@ export function Weapon({
 
   return (
     <>
-      <BlasterModel
-        rotation={[0, directionRef.current, 0]}
-        position={[weapon.position[0], 0.05, weapon.position[1]]}
-        scale={scale.get()}
-        onClick={(e) => {
-          e.stopPropagation();
-          setSelectedWeapon(weapon.id);
-        }}
-      />
+      {weapon.type === "Turret" && (
+        <BlasterModel
+          rotation={[0, directionRef.current, 0]}
+          position={[weapon.position[0], 0.05, weapon.position[1]]}
+          scale={scale.get()}
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedWeapon(weapon.id);
+          }}
+        />
+      )}
+      {weapon.type === "Cannon" && (
+        <CannonModel
+          rotation={[0, directionRef.current, 0]}
+          position={[weapon.position[0], 0.05, weapon.position[1]]}
+          scale={scale.get()}
+          onClick={(e) => {
+            e.stopPropagation();
+            setSelectedWeapon(weapon.id);
+          }}
+        />
+      )}
       {selected && (
         <>
           <Ring

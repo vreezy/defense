@@ -19,6 +19,8 @@ export const WeaponFocusModes = [
   "strongest",
 ] as const;
 export type WeaponFocusMode = (typeof WeaponFocusModes)[number];
+export const WeaponTypes = ["Turret", "Cannon"] as const;
+export type WeaponType = (typeof WeaponTypes)[number];
 export interface Weapon {
   id: string;
   position: [number, number];
@@ -26,6 +28,7 @@ export interface Weapon {
   focusMode: WeaponFocusMode;
   speed: number;
   damage: number;
+  type: WeaponType;
 }
 
 export interface Grid {

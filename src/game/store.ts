@@ -1,14 +1,12 @@
 import { create } from "zustand";
-import { Enemy, EnemyRemoveType, Grid, Weapon } from "./types";
+import { Enemy, EnemyRemoveType, Grid, Weapon, WeaponType } from "./types";
 import { getAngle } from "./utils/getAngle";
 
-export const WeaponTypes = ["Turret"] as const;
-export type WeaponType = (typeof WeaponTypes)[number] | null;
 export interface GameState {
   grid: Grid;
   enemies: Enemy[];
   weapons: Weapon[];
-  weaponSpawnType: WeaponType;
+  weaponSpawnType: WeaponType | null;
   selectedWeapon: string | null;
 }
 
@@ -21,7 +19,7 @@ export interface GameActions {
   updateWeapon: (weapon: Weapon) => void;
   removeWeapon: (id: string) => void;
 
-  setWeaponSpawnType: (type: WeaponType) => void;
+  setWeaponSpawnType: (type: WeaponType | null) => void;
   setSelectedWeapon: (id: string | null) => void;
 }
 export type GameStore = GameState & GameActions;
@@ -84,6 +82,7 @@ export const useGameStore = create<GameStore>()((set) => ({
           focusMode: "nearest",
           speed: 0.1,
           damage: 0.1,
+          type: state.weaponSpawnType!,
         },
       ],
     })),
@@ -98,7 +97,7 @@ export const useGameStore = create<GameStore>()((set) => ({
       weapons: state.weapons.filter((weapon) => weapon.id !== id),
     })),
 
-  setWeaponSpawnType: (type: WeaponType) =>
+  setWeaponSpawnType: (type: WeaponType | null) =>
     set((prev) => ({
       ...prev,
       weaponSpawnType: type,

@@ -25,7 +25,7 @@ export function Tile({
     (event: ThreeEvent<MouseEvent>) => {
       console.log("Clicked tile", position);
       setSelectedWeapon(null);
-      if (weaponSpawnType !== "Turret") return;
+      if (weaponSpawnType === null) return;
       console.log("Trying to spawn weapon at", position);
       const taken = weapons.find((weapon) =>
         positionEquals(weapon.position, position)

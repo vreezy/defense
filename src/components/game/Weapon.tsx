@@ -40,28 +40,6 @@ export function Weapon({
 
   const pulse = usePulse(1.15, 1.3, 2);
 
-  const oldestHeuristic = useCallback((enemy: Enemy) => {
-    return enemy.spawnedAt.valueOf();
-  }, []);
-  const youngestHeuristic = (enemy: Enemy) => {
-    return -enemy.spawnedAt.valueOf();
-  };
-  const closestHeuristic = useCallback(
-    (enemy: Enemy) => {
-      return Math.hypot(
-        enemy.position[0] - weapon.position[0],
-        enemy.position[2] - weapon.position[1]
-      );
-    },
-    [weapon.position]
-  );
-  const weakestHeuristic = (enemy: Enemy) => {
-    return enemy.health;
-  };
-  const strongestHeuristic = (enemy: Enemy) => {
-    return -enemy.health;
-  };
-
   const { scale } = useSpring({
     scale: selected ? pulse : 1,
     config: { tension: 170, friction: 26 },
@@ -72,19 +50,7 @@ export function Weapon({
     setX((prevX) => (prevX + 0.001) % (Math.PI * 2));
     setTimer((prev) => prev + delta);
 
-    const target = findTarget(
-      weapon,
-      enemies,
-      weapon.focusMode === "nearest"
-        ? closestHeuristic
-        : weapon.focusMode === "oldest"
-        ? oldestHeuristic
-        : weapon.focusMode === "youngest"
-        ? youngestHeuristic
-        : weapon.focusMode === "weakest"
-        ? weakestHeuristic
-        : strongestHeuristic
-    );
+    const target = findTarget(weapon, enemies);
 
     if (timer > weapon.speed && target) {
       setTimer(0);
